@@ -7,10 +7,16 @@ import commentsModel from './src/models/comments.js'
 import UsersModel from './src/models/Users.js';
 import postModel from './src/models/post.js';
 import connect from './src/config/db/index.js';
+import Courses from './src/models/course.js'
 //connect to DB
 connect();
-
-
+// mongoose.connect("mongodb+srv://chauquyen1233:aFMV7wvFBLtghbOJ@cluster0.kb6mf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/wien_lam_database")
+//     .then(() => {
+//         console.log('kết nối thành công')
+//     })
+//     .catch(err => {
+//         console.log('kết nối thất bại', err)
+//     })
 const app = express();
 
 app.use(express.json());
@@ -21,19 +27,13 @@ app.use(express.json());
 app.listen(8080, () => {
     console.log('Server is running!');
 });
-app.get('/api/v1/users', async (req, res) => {
+app.get('/api/v1/courses', async (req, res) => {
     try {
-        const users = await UsersModel.find(); // Tìm tất cả người dùng trong database
-        res.status(200).json({
-            data: users,
-            message: 'Lấy danh sách người dùng thành công!',
-            success: true
-        });
+        const courses = await Courses.find({})
+        res.status(200).send(courses);
+        ;
+
     } catch (error) {
-        res.status(500).json({
-            message: 'Đã xảy ra lỗi khi lấy danh sách người dùng!',
-            error: error.message,
-            success: false
-        });
+        res.status(400).send({ message: 'Lỗi khi lấy dữ liệu từ courses', error });
     }
 });
