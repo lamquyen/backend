@@ -1,0 +1,17 @@
+import mongoose from 'mongoose';
+
+
+
+async function connect() {
+    try {
+        await mongoose.connect('mongodb://127.0.0.1/wien_lam_database', {
+
+        });
+        console.log('connect successfuly!!!')
+    } catch (error) {
+        console.log('connect failure', error)
+    }
+
+
+}
+export default connect;
