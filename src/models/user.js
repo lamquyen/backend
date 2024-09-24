@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
-const Course = new Schema({
+const User = new Schema({
 
     name: String,
     discription: String,
 })
-const Courses = mongoose.model('courses', Course);
-export default Courses;
+const Users = mongoose.model('users', User);
+export default Users;
