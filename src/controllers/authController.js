@@ -1,5 +1,8 @@
 import userModel from "../models/user.js";
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
+
+
 const register = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
@@ -26,10 +29,12 @@ const register = async (req, res) => {
         if (isExitsUser) {
             return res.status(400).send('email already exits')
         }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
         const newUser = {
             userName: userName,
             email: email,
-            password: password
+            password: hashedPassword
         }
         await userModel.create(newUser)
         res.status(200).send('tạo mới user thành công')
@@ -72,4 +77,42 @@ const login = async (req, res) => {
         return res.status(400).send('lỗi')
     }
 }
-export { register, login };
+const listUser = async (req, res) => {
+    try {
+        const users = await userModel.find({})
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(400).send('lỗi')
+    }
+
+}
+const resetPassword = async (req, res) => {
+    try {
+        let { email, newPassword } = req.body;
+        if (!email) {
+            return res.status(400).send('email is required')
+        } else {
+            email = email.trim();
+        }
+        if (!newPassword) {
+            return res.status(400).send('newPassword is required')
+        }
+        else {
+            newPassword = newPassword.trim();
+        }
+        const user = await userModel.findOne({ email: email })
+        if (!user) {
+            return res.status(400).send('user not found')
+        }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).send({ message: 'reset password succesfully', data: user })
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).send('lỗi')
+    }
+}
+export { register, login, listUser, resetPassword };

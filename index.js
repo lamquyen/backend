@@ -4,7 +4,6 @@ import connect from './src/config/db/index.js';
 import userRouter from './src/routers/userRouter.js';
 
 
-
 //connect to DB
 connect();
 
